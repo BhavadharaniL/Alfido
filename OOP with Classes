@@ -1,0 +1,405 @@
+import React, { useState } from 'react';
+import { Play, RotateCcw, Check, X, BookOpen } from 'lucide-react';
+
+export default function JavaOOPPlatform() {
+  const [code, setCode] = useState(`// Base class
+class Animal {
+    protected String name;
+    
+    public Animal(String name) {
+        this.name = name;
+    }
+    
+    public void makeSound() {
+        System.out.println(name + " makes a sound");
+    }
+    
+    public void introduce() {
+        System.out.println("I am " + name);
+    }
+}
+
+// Derived class - Dog
+class Dog extends Animal {
+    private String breed;
+    
+    public Dog(String name, String breed) {
+        super(name);
+        this.breed = breed;
+    }
+    
+    // TODO: Override makeSound() method
+    // Make the dog bark!
+    
+    
+    public void fetch() {
+        System.out.println(name + " is fetching the ball!");
+    }
+}
+
+// Derived class - Cat
+class Cat extends Animal {
+    private int lives;
+    
+    public Cat(String name, int lives) {
+        super(name);
+        this.lives = lives;
+    }
+    
+    // TODO: Override makeSound() method
+    // Make the cat meow!
+    
+    
+    public void scratch() {
+        System.out.println(name + " is scratching the furniture!");
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) {
+        // Create instances
+        Dog dog = new Dog("Buddy", "Golden Retriever");
+        Cat cat = new Cat("Whiskers", 9);
+        
+        // Call methods
+        dog.introduce();
+        dog.makeSound();
+        dog.fetch();
+        
+        System.out.println();
+        
+        cat.introduce();
+        cat.makeSound();
+        cat.scratch();
+    }
+}`);
+  
+  const [output, setOutput] = useState('');
+  const [isRunning, setIsRunning] = useState(false);
+  const [testsPassed, setTestsPassed] = useState(null);
+  const [showHints, setShowHints] = useState(false);
+
+  const runCode = () => {
+    setIsRunning(true);
+    setOutput('');
+    
+    setTimeout(() => {
+      try {
+        // Extract all println statements
+        const printMatches = [...code.matchAll(/System\.out\.println\s*\(\s*([^)]+)\s*\)/g)];
+        
+        if (printMatches.length === 0) {
+          setOutput('No output detected.');
+          setTestsPassed(false);
+          setIsRunning(false);
+          return;
+        }
+        
+        // Simulate execution
+        let simulatedOutput = [];
+        
+        // Check for Dog class with overridden makeSound
+        const dogOverride = /class\s+Dog\s+extends\s+Animal\s*{[\s\S]?@Override[\s\S]?public\s+void\s+makeSound\s*\(\s*\)\s*{[\s\S]?System\.out\.println\s\([^)]bark[^)]\)/i.test(code);
+        
+        // Check for Cat class with overridden makeSound
+        const catOverride = /class\s+Cat\s+extends\s+Animal\s*{[\s\S]?@Override[\s\S]?public\s+void\s+makeSound\s*\(\s*\)\s*{[\s\S]?System\.out\.println\s\([^)]meow[^)]\)/i.test(code);
+        
+        // Build expected output
+        simulatedOutput.push("I am Buddy");
+        
+        if (dogOverride) {
+          simulatedOutput.push("Buddy barks: Woof! Woof!");
+        } else {
+          simulatedOutput.push("Buddy makes a sound");
+        }
+        
+        simulatedOutput.push("Buddy is fetching the ball!");
+        simulatedOutput.push("");
+        simulatedOutput.push("I am Whiskers");
+        
+        if (catOverride) {
+          simulatedOutput.push("Whiskers meows: Meow! Meow!");
+        } else {
+          simulatedOutput.push("Whiskers makes a sound");
+        }
+        
+        simulatedOutput.push("Whiskers is scratching the furniture!");
+        
+        const outputText = simulatedOutput.join('\n');
+        setOutput(outputText);
+        
+        // Check if both methods are overridden correctly
+        if (dogOverride && catOverride) {
+          setTestsPassed(true);
+        } else {
+          setTestsPassed(false);
+        }
+        
+      } catch (error) {
+        setOutput(Error: ${error.message});
+        setTestsPassed(false);
+      }
+      
+      setIsRunning(false);
+    }, 1000);
+  };
+
+  const resetCode = () => {
+    setCode(`// Base class
+class Animal {
+    protected String name;
+    
+    public Animal(String name) {
+        this.name = name;
+    }
+    
+    public void makeSound() {
+        System.out.println(name + " makes a sound");
+    }
+    
+    public void introduce() {
+        System.out.println("I am " + name);
+    }
+}
+
+// Derived class - Dog
+class Dog extends Animal {
+    private String breed;
+    
+    public Dog(String name, String breed) {
+        super(name);
+        this.breed = breed;
+    }
+    
+    // TODO: Override makeSound() method
+    // Make the dog bark!
+    
+    
+    public void fetch() {
+        System.out.println(name + " is fetching the ball!");
+    }
+}
+
+// Derived class - Cat
+class Cat extends Animal {
+    private int lives;
+    
+    public Cat(String name, int lives) {
+        super(name);
+        this.lives = lives;
+    }
+    
+    // TODO: Override makeSound() method
+    // Make the cat meow!
+    
+    
+    public void scratch() {
+        System.out.println(name + " is scratching the furniture!");
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) {
+        // Create instances
+        Dog dog = new Dog("Buddy", "Golden Retriever");
+        Cat cat = new Cat("Whiskers", 9);
+        
+        // Call methods
+        dog.introduce();
+        dog.makeSound();
+        dog.fetch();
+        
+        System.out.println();
+        
+        cat.introduce();
+        cat.makeSound();
+        cat.scratch();
+    }
+}`);
+    setOutput('');
+    setTestsPassed(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-white mb-2">Task 3: OOP with Classes</h1>
+          <p className="text-gray-400">Demonstrate classes, inheritance, and method overriding in Java.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Panel - Problem Description */}
+          <div className="bg-gray-800 rounded-lg p-6 shadow-lg overflow-y-auto" style={{ maxHeight: '800px' }}>
+            <h2 className="text-xl font-semibold mb-4 text-white">Problem Description</h2>
+            
+            <div className="space-y-4 text-gray-300">
+              <div>
+                <h3 className="font-semibold text-white mb-2">Task:</h3>
+                <p>Complete the Java program that demonstrates Object-Oriented Programming concepts:</p>
+                <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                  <li><strong>Classes:</strong> Animal (base class), Dog and Cat (derived classes)</li>
+                  <li><strong>Inheritance:</strong> Dog and Cat inherit from Animal</li>
+                  <li><strong>Method Overriding:</strong> Override the makeSound() method in both subclasses</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-white mb-2">Your Task:</h3>
+                <ol className="list-decimal list-inside space-y-2 text-sm">
+                  <li>In the <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">Dog</code> class, override the <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">makeSound()</code> method to print: <code className="bg-gray-900 px-2 py-1 rounded text-green-400">"Buddy barks: Woof! Woof!"</code></li>
+                  <li>In the <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">Cat</code> class, override the <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">makeSound()</code> method to print: <code className="bg-gray-900 px-2 py-1 rounded text-green-400">"Whiskers meows: Meow! Meow!"</code></li>
+                  <li>Use the <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">@Override</code> annotation</li>
+                </ol>
+              </div>
+
+              <div>
+                <button
+                  onClick={() => setShowHints(!showHints)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition"
+                >
+                  <BookOpen size={16} />
+                  {showHints ? 'Hide Hints' : 'Show Hints'}
+                </button>
+                
+                {showHints && (
+                  <div className="mt-3 p-4 bg-gray-900 rounded space-y-3 text-sm">
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-1">Hint 1 - Method Overriding:</p>
+                      <pre className="text-xs text-gray-300 overflow-x-auto">
+{`@Override
+public void makeSound() {
+    System.out.println(name + " barks: Woof! Woof!");
+}`}
+                      </pre>
+                    </div>
+                    
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-1">Hint 2 - Key Concepts:</p>
+                      <ul className="list-disc list-inside space-y-1 text-gray-300">
+                        <li><strong>super(name)</strong> calls the parent constructor</li>
+                        <li><strong>protected</strong> allows subclasses to access the field</li>
+                        <li><strong>@Override</strong> annotation indicates method overriding</li>
+                        <li>Overridden methods replace parent behavior</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-white mb-2">Expected Output:</h3>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 font-mono text-xs overflow-x-auto">
+{`I am Buddy
+Buddy barks: Woof! Woof!
+Buddy is fetching the ball!
+
+I am Whiskers
+Whiskers meows: Meow! Meow!
+Whiskers is scratching the furniture!`}
+                </pre>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Test Cases:</h3>
+                <div className="bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <div className="flex items-start gap-2">
+                    {testsPassed === true && <Check className="text-green-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === false && <X className="text-red-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === null && <div className="w-5 h-5 border-2 border-gray-600 rounded-full mt-1 flex-shrink-0" />}
+                    <span>Dog class correctly overrides makeSound() with "bark"</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    {testsPassed === true && <Check className="text-green-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === false && <X className="text-red-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === null && <div className="w-5 h-5 border-2 border-gray-600 rounded-full mt-1 flex-shrink-0" />}
+                    <span>Cat class correctly overrides makeSound() with "meow"</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-900/20 border border-blue-700 rounded p-3 text-sm">
+                <h3 className="font-semibold text-blue-400 mb-2">💡 Learning Objectives:</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Understand class inheritance with <code className="bg-gray-900 px-1 rounded">extends</code></li>
+                  <li>Learn method overriding with <code className="bg-gray-900 px-1 rounded">@Override</code></li>
+                  <li>Use <code className="bg-gray-900 px-1 rounded">super()</code> to call parent constructors</li>
+                  <li>Work with protected and private access modifiers</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel - Code Editor */}
+          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <div className="bg-gray-700 px-4 py-2 flex items-center justify-between">
+              <span className="font-semibold text-white">Solution.java</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={resetCode}
+                  className="flex items-center gap-1 px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded text-sm transition"
+                >
+                  <RotateCcw size={16} />
+                  Reset
+                </button>
+                <button
+                  onClick={runCode}
+                  disabled={isRunning}
+                  className="flex items-center gap-1 px-4 py-1 bg-green-600 hover:bg-green-700 rounded text-sm font-semibold transition disabled:opacity-50"
+                >
+                  <Play size={16} />
+                  {isRunning ? 'Running...' : 'Run Code'}
+                </button>
+              </div>
+            </div>
+
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="flex-1 bg-gray-900 text-gray-100 p-4 font-mono text-sm resize-none focus:outline-none"
+              style={{ minHeight: '500px' }}
+              spellCheck="false"
+            />
+
+            {/* Output Panel */}
+            <div className="bg-gray-950 border-t border-gray-700">
+              <div className="px-4 py-2 bg-gray-800 text-sm font-semibold">
+                Output:
+              </div>
+              <div className="p-4 font-mono text-sm min-h-[150px] max-h-[200px] overflow-y-auto">
+                {output ? (
+                  <pre className={testsPassed ? 'text-green-400' : 'text-orange-400'}>
+                    {output}
+                  </pre>
+                ) : (
+                  <div className="text-gray-500 italic">
+                    Click "Run Code" to see output...
+                  </div>
+                )}
+              </div>
+              
+              {testsPassed !== null && (
+                <div className={px-4 py-2 border-t ${testsPassed ? 'bg-green-900/20 border-green-700' : 'bg-orange-900/20 border-orange-700'}}>
+                  <div className="flex items-center gap-2">
+                    {testsPassed ? (
+                      <>
+                        <Check className="text-green-500" size={20} />
+                        <span className="text-green-400 font-semibold">Excellent! All methods overridden correctly! ✓</span>
+                      </>
+                    ) : (
+                      <>
+                        <X className="text-orange-500" size={20} />
+                        <span className="text-orange-400 font-semibold">Override the makeSound() methods in both Dog and Cat classes!</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
