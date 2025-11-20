@@ -1,0 +1,176 @@
+import React, { useState } from 'react';
+import { Play, RotateCcw, Check, X } from 'lucide-react';
+
+export default function JavaCodingPlatform() {
+  const [code, setCode] = useState(`public class Solution {
+    public static void main(String[] args) {
+        // Write your code here
+        
+    }
+}`);
+  
+  const [output, setOutput] = useState('');
+  const [isRunning, setIsRunning] = useState(false);
+  const [testsPassed, setTestsPassed] = useState(null);
+
+  const runCode = () => {
+    setIsRunning(true);
+    setOutput('');
+    
+    setTimeout(() => {
+      try {
+        // Simulate Java execution by checking for System.out.println
+        const printMatch = code.match(/System\.out\.println\s*\(\s*["'](.+?)["']\s*\)/);
+        
+        if (printMatch) {
+          const printedText = printMatch[1];
+          setOutput(printedText);
+          
+          // Check if it matches "Hello, World!"
+          if (printedText === "Hello, World!") {
+            setTestsPassed(true);
+          } else {
+            setTestsPassed(false);
+          }
+        } else {
+          setOutput('No output detected. Use System.out.println() to print.');
+          setTestsPassed(false);
+        }
+      } catch (error) {
+        setOutput(Error: ${error.message});
+        setTestsPassed(false);
+      }
+      
+      setIsRunning(false);
+    }, 800);
+  };
+
+  const resetCode = () => {
+    setCode(`public class Solution {
+    public static void main(String[] args) {
+        // Write your code here
+        
+    }
+}`);
+    setOutput('');
+    setTestsPassed(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-white mb-2">Task 1: Hello World Program</h1>
+          <p className="text-gray-400">Create a Java program to print "Hello, World!" on the console.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Panel - Problem Description */}
+          <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h2 className="text-xl font-semibold mb-4 text-white">Problem Description</h2>
+            
+            <div className="space-y-4 text-gray-300">
+              <div>
+                <h3 className="font-semibold text-white mb-2">Task:</h3>
+                <p>Write a Java program that prints "Hello, World!" to the console.</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-white mb-2">Expected Output:</h3>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 font-mono">
+Hello, World!
+                </pre>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-white mb-2">Hint:</h3>
+                <p className="text-sm">Use <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">System.out.println()</code> to print text to the console.</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Test Cases:</h3>
+                <div className="bg-gray-900 p-3 rounded space-y-2">
+                  <div className="flex items-center gap-2">
+                    {testsPassed === true && <Check className="text-green-500" size={20} />}
+                    {testsPassed === false && <X className="text-red-500" size={20} />}
+                    {testsPassed === null && <div className="w-5 h-5 border-2 border-gray-600 rounded-full" />}
+                    <span>Output must be exactly: "Hello, World!"</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel - Code Editor */}
+          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <div className="bg-gray-700 px-4 py-2 flex items-center justify-between">
+              <span className="font-semibold text-white">Solution.java</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={resetCode}
+                  className="flex items-center gap-1 px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded text-sm transition"
+                >
+                  <RotateCcw size={16} />
+                  Reset
+                </button>
+                <button
+                  onClick={runCode}
+                  disabled={isRunning}
+                  className="flex items-center gap-1 px-4 py-1 bg-green-600 hover:bg-green-700 rounded text-sm font-semibold transition disabled:opacity-50"
+                >
+                  <Play size={16} />
+                  {isRunning ? 'Running...' : 'Run Code'}
+                </button>
+              </div>
+            </div>
+
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="flex-1 bg-gray-900 text-gray-100 p-4 font-mono text-sm resize-none focus:outline-none"
+              style={{ minHeight: '300px' }}
+              spellCheck="false"
+            />
+
+            {/* Output Panel */}
+            <div className="bg-gray-950 border-t border-gray-700">
+              <div className="px-4 py-2 bg-gray-800 text-sm font-semibold">
+                Output:
+              </div>
+              <div className="p-4 font-mono text-sm min-h-[100px]">
+                {output ? (
+                  <div className={testsPassed ? 'text-green-400' : 'text-red-400'}>
+                    {output}
+                  </div>
+                ) : (
+                  <div className="text-gray-500 italic">
+                    Click "Run Code" to see output...
+                  </div>
+                )}
+              </div>
+              
+              {testsPassed !== null && (
+                <div className={px-4 py-2 border-t ${testsPassed ? 'bg-green-900/20 border-green-700' : 'bg-red-900/20 border-red-700'}}>
+                  <div className="flex items-center gap-2">
+                    {testsPassed ? (
+                      <>
+                        <Check className="text-green-500" size={20} />
+                        <span className="text-green-400 font-semibold">All tests passed! ✓</span>
+                      </>
+                    ) : (
+                      <>
+                        <X className="text-red-500" size={20} />
+                        <span className="text-red-400 font-semibold">Tests failed. Try again!</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
