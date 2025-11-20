@@ -1,0 +1,414 @@
+import React, { useState } from 'react';
+import { Play, RotateCcw, Check, X, BookOpen, Upload, FileText } from 'lucide-react';
+
+export default function JavaFileReaderPlatform() {
+  const [code, setCode] = useState(`import java.io.*;
+
+public class FileReaderDemo {
+    public static void main(String[] args) {
+        String filename = "sample.txt";
+        
+        // TODO: Implement file reading logic here
+        // Use BufferedReader and FileReader
+        // Handle IOException with try-catch
+        
+        try {
+            // Your code here
+            
+            
+            
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+}`);
+  
+  const [output, setOutput] = useState('');
+  const [isRunning, setIsRunning] = useState(false);
+  const [testsPassed, setTestsPassed] = useState(null);
+  const [showHints, setShowHints] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [fileContent, setFileContent] = useState("Hello, World!\nThis is a sample text file.\nJava file I/O is fun!\nLearning to read files line by line.");
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === 'text/plain') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFileContent(e.target.result);
+        setUploadedFile(file.name);
+      };
+      reader.readAsText(file);
+    } else {
+      alert('Please upload a text file (.txt)');
+    }
+  };
+
+  const runCode = () => {
+    setIsRunning(true);
+    setOutput('');
+    
+    setTimeout(() => {
+      try {
+        // Check for required components
+        const hasBufferedReader = /BufferedReader/.test(code);
+        const hasFileReader = /FileReader/.test(code);
+        const hasTryCatch = /try\s*{[\s\S]*}\s*catch/.test(code);
+        const hasReadLine = /readLine\s*\(\s*\)/.test(code);
+        const hasClose = /\.close\s*\(\s*\)/.test(code);
+        const hasPrintln = /System\.out\.println/.test(code);
+        
+        // Check if code structure is correct
+        if (!hasBufferedReader || !hasFileReader) {
+          setOutput('Error: You need to use BufferedReader and FileReader to read the file.\n\nClick "Show Hints" for help!');
+          setTestsPassed(false);
+          setIsRunning(false);
+          return;
+        }
+        
+        if (!hasTryCatch) {
+          setOutput('Error: You need to use try-catch to handle IOException.\n\nClick "Show Hints" for help!');
+          setTestsPassed(false);
+          setIsRunning(false);
+          return;
+        }
+        
+        if (!hasReadLine) {
+          setOutput('Error: You need to use readLine() method to read lines from the file.\n\nClick "Show Hints" for help!');
+          setTestsPassed(false);
+          setIsRunning(false);
+          return;
+        }
+        
+        // Simulate successful file reading
+        let simulatedOutput = [];
+        simulatedOutput.push('Reading file: sample.txt');
+        simulatedOutput.push('----------------------------------------');
+        simulatedOutput.push(fileContent);
+        simulatedOutput.push('----------------------------------------');
+        simulatedOutput.push('File read successfully!');
+        
+        const outputText = simulatedOutput.join('\n');
+        setOutput(outputText);
+        
+        // Check if all required components are present
+        if (hasBufferedReader && hasFileReader && hasTryCatch && hasReadLine && hasPrintln) {
+          setTestsPassed(true);
+        } else {
+          setTestsPassed(false);
+        }
+        
+      } catch (error) {
+        setOutput(Error: ${error.message});
+        setTestsPassed(false);
+      }
+      
+      setIsRunning(false);
+    }, 1000);
+  };
+
+  const resetCode = () => {
+    setCode(`import java.io.*;
+
+public class FileReaderDemo {
+    public static void main(String[] args) {
+        String filename = "sample.txt";
+        
+        // TODO: Implement file reading logic here
+        // Use BufferedReader and FileReader
+        // Handle IOException with try-catch
+        
+        try {
+            // Your code here
+            
+            
+            
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+}`);
+    setOutput('');
+    setTestsPassed(null);
+  };
+
+  const loadSolution = () => {
+    setCode(`import java.io.*;
+
+public class FileReaderDemo {
+    public static void main(String[] args) {
+        String filename = "sample.txt";
+        
+        try {
+            // Create FileReader and BufferedReader
+            FileReader fileReader = new FileReader(filename);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            
+            System.out.println("Reading file: " + filename);
+            System.out.println("----------------------------------------");
+            
+            // Read file line by line
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
+            }
+            
+            System.out.println("----------------------------------------");
+            System.out.println("File read successfully!");
+            
+            // Close the reader
+            bufferedReader.close();
+            
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+}`);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-white mb-2">Task 4: File Reader</h1>
+          <p className="text-gray-400">Write a Java program to read and display the contents of a text file.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Panel - Problem Description */}
+          <div className="bg-gray-800 rounded-lg p-6 shadow-lg overflow-y-auto" style={{ maxHeight: '800px' }}>
+            <h2 className="text-xl font-semibold mb-4 text-white">Problem Description</h2>
+            
+            <div className="space-y-4 text-gray-300">
+              <div>
+                <h3 className="font-semibold text-white mb-2">Task:</h3>
+                <p>Create a Java program that reads a text file and displays its contents line by line.</p>
+                <p className="mt-2 text-sm">You'll learn about:</p>
+                <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                  <li><strong>FileReader</strong> - Reads character files</li>
+                  <li><strong>BufferedReader</strong> - Efficient line-by-line reading</li>
+                  <li><strong>Exception Handling</strong> - IOException handling</li>
+                  <li><strong>Resource Management</strong> - Closing streams properly</li>
+                </ul>
+              </div>
+
+              {/* File Upload Section */}
+              <div className="bg-gray-900 rounded p-4 border border-gray-700">
+                <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
+                  <FileText size={18} />
+                  Test File Content
+                </h3>
+                <p className="text-sm text-gray-400 mb-3">This is the content of "sample.txt" that your program will read:</p>
+                <pre className="bg-gray-950 p-3 rounded text-green-400 font-mono text-xs overflow-x-auto border border-gray-700">
+{fileContent}
+                </pre>
+                <div className="mt-3">
+                  <label className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm cursor-pointer transition w-fit">
+                    <Upload size={16} />
+                    Upload Your Own .txt File
+                    <input 
+                      type="file" 
+                      accept=".txt" 
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  {uploadedFile && (
+                    <p className="text-xs text-green-400 mt-2">✓ Uploaded: {uploadedFile}</p>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-white mb-2">Your Task:</h3>
+                <ol className="list-decimal list-inside space-y-2 text-sm">
+                  <li>Create a <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">FileReader</code> object with the filename</li>
+                  <li>Wrap it in a <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">BufferedReader</code> for efficient reading</li>
+                  <li>Use a <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">while</code> loop with <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">readLine()</code> to read each line</li>
+                  <li>Print each line using <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">System.out.println()</code></li>
+                  <li>Close the BufferedReader after reading</li>
+                  <li>Handle <code className="bg-gray-900 px-2 py-1 rounded text-yellow-400">IOException</code> in a catch block</li>
+                </ol>
+              </div>
+
+              <div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowHints(!showHints)}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition"
+                  >
+                    <BookOpen size={16} />
+                    {showHints ? 'Hide Hints' : 'Show Hints'}
+                  </button>
+                  <button
+                    onClick={loadSolution}
+                    className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-sm transition"
+                  >
+                    <Check size={16} />
+                    View Solution
+                  </button>
+                </div>
+                
+                {showHints && (
+                  <div className="mt-3 p-4 bg-gray-900 rounded space-y-3 text-sm">
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-1">Hint 1 - Create Readers:</p>
+                      <pre className="text-xs text-gray-300 overflow-x-auto">
+{`FileReader fileReader = new FileReader(filename);
+BufferedReader bufferedReader = new BufferedReader(fileReader);`}
+                      </pre>
+                    </div>
+                    
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-1">Hint 2 - Read Lines:</p>
+                      <pre className="text-xs text-gray-300 overflow-x-auto">
+{`String line;
+while ((line = bufferedReader.readLine()) != null) {
+    System.out.println(line);
+}`}
+                      </pre>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-1">Hint 3 - Close Resources:</p>
+                      <pre className="text-xs text-gray-300 overflow-x-auto">
+{bufferedReader.close();}
+                      </pre>
+                    </div>
+                    
+                    <div>
+                      <p className="font-semibold text-blue-400 mb-1">Key Concepts:</p>
+                      <ul className="list-disc list-inside space-y-1 text-gray-300">
+                        <li><strong>BufferedReader</strong> reads text efficiently</li>
+                        <li><strong>readLine()</strong> returns null at end of file</li>
+                        <li>Always close streams to free resources</li>
+                        <li>IOException must be caught or declared</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-white mb-2">Expected Output Format:</h3>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 font-mono text-xs overflow-x-auto">
+{`Reading file: sample.txt
+----------------------------------------
+Hello, World!
+This is a sample text file.
+Java file I/O is fun!
+Learning to read files line by line.
+----------------------------------------
+File read successfully!`}
+                </pre>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Test Cases:</h3>
+                <div className="bg-gray-900 p-3 rounded space-y-2 text-sm">
+                  <div className="flex items-start gap-2">
+                    {testsPassed === true && <Check className="text-green-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === false && <X className="text-red-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === null && <div className="w-5 h-5 border-2 border-gray-600 rounded-full mt-1 flex-shrink-0" />}
+                    <span>Uses BufferedReader and FileReader</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    {testsPassed === true && <Check className="text-green-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === false && <X className="text-red-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === null && <div className="w-5 h-5 border-2 border-gray-600 rounded-full mt-1 flex-shrink-0" />}
+                    <span>Reads file line by line using readLine()</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    {testsPassed === true && <Check className="text-green-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === false && <X className="text-red-500 mt-1 flex-shrink-0" size={20} />}
+                    {testsPassed === null && <div className="w-5 h-5 border-2 border-gray-600 rounded-full mt-1 flex-shrink-0" />}
+                    <span>Properly handles IOException</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-yellow-900/20 border border-yellow-700 rounded p-3 text-sm">
+                <h3 className="font-semibold text-yellow-400 mb-2">⚠ Important Notes:</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Always close file readers to prevent resource leaks</li>
+                  <li>IOException is a checked exception that must be handled</li>
+                  <li>readLine() returns null when the end of file is reached</li>
+                  <li>BufferedReader is more efficient than reading byte by byte</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel - Code Editor */}
+          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <div className="bg-gray-700 px-4 py-2 flex items-center justify-between">
+              <span className="font-semibold text-white">FileReaderDemo.java</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={resetCode}
+                  className="flex items-center gap-1 px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded text-sm transition"
+                >
+                  <RotateCcw size={16} />
+                  Reset
+                </button>
+                <button
+                  onClick={runCode}
+                  disabled={isRunning}
+                  className="flex items-center gap-1 px-4 py-1 bg-green-600 hover:bg-green-700 rounded text-sm font-semibold transition disabled:opacity-50"
+                >
+                  <Play size={16} />
+                  {isRunning ? 'Running...' : 'Run Code'}
+                </button>
+              </div>
+            </div>
+
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="flex-1 bg-gray-900 text-gray-100 p-4 font-mono text-sm resize-none focus:outline-none"
+              style={{ minHeight: '500px' }}
+              spellCheck="false"
+            />
+
+            {/* Output Panel */}
+            <div className="bg-gray-950 border-t border-gray-700">
+              <div className="px-4 py-2 bg-gray-800 text-sm font-semibold">
+                Output:
+              </div>
+              <div className="p-4 font-mono text-sm min-h-[150px] max-h-[200px] overflow-y-auto">
+                {output ? (
+                  <pre className={testsPassed ? 'text-green-400' : 'text-orange-400'}>
+                    {output}
+                  </pre>
+                ) : (
+                  <div className="text-gray-500 italic">
+                    Click "Run Code" to see output...
+                  </div>
+                )}
+              </div>
+              
+              {testsPassed !== null && (
+                <div className={px-4 py-2 border-t ${testsPassed ? 'bg-green-900/20 border-green-700' : 'bg-orange-900/20 border-orange-700'}}>
+                  <div className="flex items-center gap-2">
+                    {testsPassed ? (
+                      <>
+                        <Check className="text-green-500" size={20} />
+                        <span className="text-green-400 font-semibold">Perfect! File read successfully! ✓</span>
+                      </>
+                    ) : (
+                      <>
+                        <X className="text-orange-500" size={20} />
+                        <span className="text-orange-400 font-semibold">Check the hints or view the solution for help!</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
