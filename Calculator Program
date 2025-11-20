@@ -1,0 +1,287 @@
+import React, { useState } from 'react';
+import { Calculator, Plus, Minus, X, Divide, Percent, AlertCircle, CheckCircle } from 'lucide-react';
+
+export default function CalculatorApp() {
+  const [num1, setNum1] = useState('');
+  const [num2, setNum2] = useState('');
+  const [operation, setOperation] = useState('');
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
+  const [history, setHistory] = useState([]);
+
+  const operations = [
+    { id: 'add', name: 'Addition', symbol: '+', icon: Plus, color: 'bg-blue-500' },
+    { id: 'subtract', name: 'Subtraction', symbol: '-', icon: Minus, color: 'bg-green-500' },
+    { id: 'multiply', name: 'Multiplication', symbol: '×', icon: X, color: 'bg-purple-500' },
+    { id: 'divide', name: 'Division', symbol: '÷', icon: Divide, color: 'bg-orange-500' },
+    { id: 'modulus', name: 'Modulus', symbol: '%', icon: Percent, color: 'bg-pink-500' },
+  ];
+
+  const calculate = () => {
+    setError('');
+    setResult(null);
+
+    // Input validation
+    if (num1 === '' || num2 === '') {
+      setError('Please enter both numbers');
+      return;
+    }
+
+    if (operation === '') {
+      setError('Please select an operation');
+      return;
+    }
+
+    const n1 = parseFloat(num1);
+    const n2 = parseFloat(num2);
+
+    // Validate numbers
+    if (isNaN(n1) || isNaN(n2)) {
+      setError('Invalid input! Please enter valid numbers.');
+      return;
+    }
+
+    let calcResult;
+    let operationSymbol = '';
+
+    try {
+      switch (operation) {
+        case 'add':
+          calcResult = n1 + n2;
+          operationSymbol = '+';
+          break;
+        case 'subtract':
+          calcResult = n1 - n2;
+          operationSymbol = '-';
+          break;
+        case 'multiply':
+          calcResult = n1 * n2;
+          operationSymbol = '×';
+          break;
+        case 'divide':
+          if (n2 === 0) {
+            throw new Error('Division by zero is not allowed!');
+          }
+          calcResult = n1 / n2;
+          operationSymbol = '÷';
+          break;
+        case 'modulus':
+          if (n2 === 0) {
+            throw new Error('Modulus by zero is not allowed!');
+          }
+          calcResult = n1 % n2;
+          operationSymbol = '%';
+          break;
+        default:
+          throw new Error('Invalid operation');
+      }
+
+      setResult(calcResult);
+      
+      // Add to history
+      const historyEntry = {
+        num1: n1,
+        num2: n2,
+        operation: operationSymbol,
+        result: calcResult,
+        timestamp: new Date().toLocaleTimeString()
+      };
+      setHistory([historyEntry, ...history].slice(0, 5));
+
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const clear = () => {
+    setNum1('');
+    setNum2('');
+    setOperation('');
+    setResult(null);
+    setError('');
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Calculator className="w-12 h-12 text-purple-400" />
+            <h1 className="text-5xl font-bold text-white">Calculator App</h1>
+          </div>
+          <p className="text-purple-300 text-lg">Core Java Concepts | Exception Handling | Input Validation</p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Main Calculator Panel */}
+          <div className="md:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
+            {/* Input Section */}
+            <div className="space-y-6 mb-8">
+              <div>
+                <label className="block text-white font-semibold mb-2 text-lg">First Number</label>
+                <input
+                  type="text"
+                  value={num1}
+                  onChange={(e) => setNum1(e.target.value)}
+                  placeholder="Enter first number"
+                  className="w-full px-4 py-3 rounded-lg bg-white/20 border-2 border-white/30 text-white placeholder-white/50 focus:border-purple-400 focus:outline-none text-lg"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white font-semibold mb-2 text-lg">Second Number</label>
+                <input
+                  type="text"
+                  value={num2}
+                  onChange={(e) => setNum2(e.target.value)}
+                  placeholder="Enter second number"
+                  className="w-full px-4 py-3 rounded-lg bg-white/20 border-2 border-white/30 text-white placeholder-white/50 focus:border-purple-400 focus:outline-none text-lg"
+                />
+              </div>
+            </div>
+
+            {/* Operation Selection */}
+            <div className="mb-8">
+              <label className="block text-white font-semibold mb-4 text-lg">Select Operation</label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {operations.map((op) => {
+                  const Icon = op.icon;
+                  return (
+                    <button
+                      key={op.id}
+                      onClick={() => setOperation(op.id)}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        operation === op.id
+                          ? ${op.color} border-white scale-105 shadow-lg
+                          : 'bg-white/10 border-white/30 hover:bg-white/20'
+                      }`}
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        <Icon className="w-8 h-8 text-white" />
+                        <span className="text-white font-semibold">{op.name}</span>
+                        <span className="text-2xl text-white font-bold">{op.symbol}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 mb-6">
+              <button
+                onClick={calculate}
+                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-xl font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                Calculate
+              </button>
+              <button
+                onClick={clear}
+                className="px-8 bg-white/20 text-white py-4 rounded-xl font-bold text-lg hover:bg-white/30 transition-all border-2 border-white/30"
+              >
+                Clear
+              </button>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-500/20 border-2 border-red-500 rounded-xl p-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="w-6 h-6 text-red-300" />
+                  <span className="text-red-200 font-semibold text-lg">✗ Error: {error}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Result Display */}
+            {result !== null && !error && (
+              <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-green-400 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <CheckCircle className="w-6 h-6 text-green-300" />
+                  <span className="text-green-200 font-semibold text-lg">RESULT</span>
+                </div>
+                <div className="text-white text-3xl font-bold text-center">
+                  {parseFloat(num1).toFixed(2)} {operations.find(op => op.id === operation)?.symbol} {parseFloat(num2).toFixed(2)} = {result.toFixed(2)}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* History Panel */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-6 border border-white/20">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-white">History</h2>
+              {history.length > 0 && (
+                <button
+                  onClick={clearHistory}
+                  className="text-sm text-purple-300 hover:text-white transition-colors"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            
+            <div className="space-y-3">
+              {history.length === 0 ? (
+                <p className="text-white/50 text-center py-8">No calculations yet</p>
+              ) : (
+                history.map((entry, index) => (
+                  <div
+                    key={index}
+                    className="bg-white/10 rounded-lg p-4 border border-white/20"
+                  >
+                    <div className="text-white font-mono text-sm mb-1">
+                      {entry.num1.toFixed(2)} {entry.operation} {entry.num2.toFixed(2)}
+                    </div>
+                    <div className="text-purple-300 font-bold text-lg">
+                      = {entry.result.toFixed(2)}
+                    </div>
+                    <div className="text-white/50 text-xs mt-1">
+                      {entry.timestamp}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Features Section */}
+        <div className="mt-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-6 border border-white/20">
+          <h3 className="text-xl font-bold text-white mb-4">✨ Features Demonstrated</h3>
+          <div className="grid md:grid-cols-3 gap-4 text-white/80">
+            <div>
+              <h4 className="font-semibold text-purple-300 mb-2">Exception Handling</h4>
+              <ul className="text-sm space-y-1">
+                <li>• Division by zero protection</li>
+                <li>• Modulus by zero protection</li>
+                <li>• Invalid input detection</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-purple-300 mb-2">Input Validation</h4>
+              <ul className="text-sm space-y-1">
+                <li>• Empty field checking</li>
+                <li>• Non-numeric input handling</li>
+                <li>• Operation selection required</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-purple-300 mb-2">Core Concepts</h4>
+              <ul className="text-sm space-y-1">
+                <li>• React state management</li>
+                <li>• Conditional rendering</li>
+                <li>• Event handling</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
